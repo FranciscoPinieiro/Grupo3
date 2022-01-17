@@ -9,7 +9,9 @@
 <body>
     
     {% for post in posts %}
-        {{ post.title }}
+        <p>{{ post.title }}</p>
+        <p>{{ post.subtitle }}</p>
+        <p>{{ post.body }}</p>
 
     {% endfor %}
         
