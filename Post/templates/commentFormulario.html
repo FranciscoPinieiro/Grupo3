@@ -1,31 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comment Formulario</title>
-</head>
-<body>
+{% extends "padre.html" %}
 
-    {% if miFormulario.errors %}
+{% load static %}
 
-    <p style="color: red;">Estan mal los datos, revisar</p>
+{% block contenidoQueCambia %}
+
+{% if miFormulario.errors %}
+
+<p style="color: red;">Estan mal los datos, revisar</p>
+
+{% endif %}
+
+<form action="'/commentFormulario/" method="POST">{% csrf_token %}
     
-    {% endif %}
+    <table>
 
-    <form action="'/commentFormulario/" method="POST">{% csrf_token %}
-        
-        <table>
+        {{ miFormulario.as_table }}
 
-            {{ miFormulario.as_table }}
+    </table>
 
-        </table>
+    <input type="submit" value="Crear">
 
-        <input type="submit" value="Crear">
+</form>
 
-    </form>
+</form>
 
-    </form>
-</body>
-</html>
+{% endblock %}

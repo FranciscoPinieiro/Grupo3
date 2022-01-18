@@ -7,6 +7,9 @@ def posts(request):
     posts=Post.objects.all()
     return render(request,'index.html',{"posts":posts})
 
+def inicio(request):
+    return render(request, "inicio.html")
+
 def showPost(request,id):
     post=Post.objects.get(id=id)
     tags=Tag.objects.filter(post__id=id)

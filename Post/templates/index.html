@@ -1,19 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
-</head>
-<body>
-    
-    {% for post in posts %}
-        <p>{{ post.title }}</p>
-        <p>{{ post.subtitle }}</p>
-        <p>{{ post.body }}</p>
+{% extends "padre.html" %}
 
-    {% endfor %}
-        
-</body>
-</html>
+{% load static %}
+
+{% block contenidoQueCambia %}
+
+{% for post in posts %}
+    <p>{{ post.title }}</p>
+    <p>{{ post.subtitle }}</p>
+    <p>{{ post.body }}</p>
+
+{% endfor %}
+
+{% endblock %}
