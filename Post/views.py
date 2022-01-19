@@ -10,11 +10,6 @@ def posts(request):
 def inicio(request):
     return render(request, "inicio.html")
 
-def showPost(request,id):
-    post=Post.objects.get(id=id)
-    tags=Tag.objects.filter(post__id=id)
-    return render(request, 'show.html', {"post":post, "tags":tags})
-
 def comment(request,id):
     comment=Comment.objects.get(id=id)
     return render(request, 'comment.html', {"comment":comment})
