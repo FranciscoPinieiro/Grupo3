@@ -46,10 +46,9 @@ def tagFormulario(request):
 
             informacion = miFormulario.cleaned_data
 
-            post = Tag(name=informacion['name'])
-            post.save()
-            posts=Post.objects.all()
-            return render(request,'index.html',{"posts":posts})
+            tag = Tag(name=informacion['name'])
+            tag.save()
+            return render(request,'inicio.html')
 
     else:
         
@@ -70,8 +69,7 @@ def commentFormulario(request):
 
             post = Comment(text=informacion['text'])
             post.save()
-            posts=Post.objects.all()
-            return render(request,'index.html',{"posts":posts})
+            return render(request,'inicio.html')
 
     else:
         
