@@ -67,8 +67,8 @@ def commentFormulario(request):
 
             informacion = miFormulario.cleaned_data
 
-            post = Comment(text=informacion['text'])
-            post.save()
+            comment = Comment(text=informacion['text'])
+            comment.save()
             return render(request,'inicio.html')
 
     else:
