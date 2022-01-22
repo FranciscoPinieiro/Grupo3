@@ -1,4 +1,4 @@
-{% extends "padre.html" %}
+{% extends "Post/padre.html" %}
 
 {% load static %}
 
@@ -10,7 +10,7 @@
 
 {% endif %}
 
-<form action="/Post/postFormulario/" method="POST">{% csrf_token %}
+<form action="/Post/tagFormulario/" method="POST">{% csrf_token %}
     
     <table>
 
@@ -23,6 +23,5 @@
 </form>
 
 </form>
-
 
 {% endblock %}

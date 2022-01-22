@@ -2,13 +2,32 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from Post.models import Post, Tag, Comment
 from Post.forms import PostFormulario, TagFormulario, CommentFormulario
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-def posts(request):
-    posts=Post.objects.all()
-    return render(request,'index.html',{"posts":posts})
+class PostList(ListView):
+    model= Post
+    template_name = "Post/postList.html"
+
+class PostDetail(DetailView):
+    model= Post
+    template_name = "Post/postDetail.html"
+
+class PostCreate(CreateView):
+    model= Post
+    success_url = "Post/"
+    fields = ['title, subtitle, body, tags']
+
+class PostUpdate(UpdateView):
+    model= Post
+    success_url = "Post/"
+    fields = ['title, subtitle, body, tags']
+
+class PostDelete(DeleteView):
+    model= Post
+    success_url = "/Post/"
 
 def inicio(request):
-    return render(request, "inicio.html")
+    return render(request, "Post/inicio.html")
 
 def comment(request,id):
     comment=Comment.objects.get(id=id)

@@ -1,0 +1,24 @@
+{% extends "Post/padre.html" %}
+
+{% load static %}
+
+{% block contenidoQueCambia %}
+
+<h1> Posts </h1>
+<ul>
+    {% for post in object_list %}
+        <li>
+            <p>Titulo: {{ post.title }}</p>
+            <p>
+                <a href="{% url 'PostDetail' post.id %}">Ver</a>
+                <a href="{% url 'PostUpdate' post.id %}">Editar</a>
+                <a href="{% url 'PostDelete' post.id %}">Borrar</a>
+            </p>
+        </li>
+
+    {% endfor %}
+</ul>
+
+<a href="{% url 'PostCreate' %}">Nuevo</a>
+
+{% endblock %}
