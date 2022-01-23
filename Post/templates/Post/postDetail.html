@@ -12,6 +12,10 @@
     {% for tag in post.tags.all %}
         <p>{{ tag.name }}</p>
     {% endfor %}
+
+    <p>
+        <a href="{% url 'Posts' %}">Regresar</a>
+    </p>
     
 </li>
 

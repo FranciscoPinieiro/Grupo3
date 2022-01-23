@@ -5,7 +5,10 @@
 {% block contenidoQueCambia %}
 
 <form method="POST">{% csrf_token %}
-    {{ form.as_p }}
+    <table>
+        {{ form.as_p }}
+    </table>
+    
 
     <input type="submit" value="Crear">
 

@@ -1,0 +1,22 @@
+{% extends "Post/padre.html" %}
+
+{% load static %}
+
+{% block contenidoQueCambia %}
+
+<h1> Comments </h1>
+<ul>
+    {% for comment in object_list %}
+        <li>
+            <p>{{ comment.name }}</p>
+            <p>
+                <a href="{% url 'CommentDelete' tag.id %}">Borrar</a>
+            </p>
+        </li>
+
+    {% endfor %}
+</ul>
+
+<a href="{% url 'CommentCreate' %}">Nuevo Comment</a>
+
+{% endblock %}

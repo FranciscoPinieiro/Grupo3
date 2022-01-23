@@ -1,15 +1,15 @@
 from django import forms
-from Post.models import Tag, Post
+from Post import models
 
-class PostFormulario(forms.Form):
+class PostForm(forms.Form):
     title=forms.CharField(max_length=40)
     subtitle=forms.CharField(max_length=40)
     body=forms.CharField(widget=forms.Textarea)
-    tags=forms.ModelMultipleChoiceField(queryset=Tag.objects.all(),widget=forms.CheckboxSelectMultiple)
+    tags=forms.ModelMultipleChoiceField(queryset=models.Tag.objects.all(),widget=forms.CheckboxSelectMultiple)
 
-class TagFormulario(forms.Form):
+class TagForm(forms.Form):
     name=forms.CharField(max_length=40)
 
-class CommentFormulario(forms.Form):
+class CommentForm(forms.Form):
     text=forms.CharField(widget=forms.Textarea)
-    post=forms.ModelChoiceField(queryset=Post.objects.all())
+    post=forms.ModelChoiceField(queryset=models.Post.objects.all())

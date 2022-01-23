@@ -1,0 +1,18 @@
+{% extends "Post/padre.html" %}
+
+{% load static %}
+
+{% block contenidoQueCambia %}
+
+<form method="POST">{% csrf_token %}
+    <table>
+        {{ form.as_p }}
+    </table>
+    
+
+    <input type="submit" value="Crear">
+
+</form>
+
+
+{% endblock %}

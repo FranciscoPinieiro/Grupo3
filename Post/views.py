@@ -1,116 +1,56 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from Post.models import Post, Tag, Comment
-from Post.forms import PostFormulario, TagFormulario, CommentFormulario
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-
-class PostList(ListView):
-    model= Post
-    template_name = "Post/postList.html"
-
-class PostDetail(DetailView):
-    model= Post
-    template_name = "Post/postDetail.html"
-
-class PostCreate(CreateView):
-    model= Post
-    success_url = "Post/"
-    fields = ['title, subtitle, body, tags']
-
-class PostUpdate(UpdateView):
-    model= Post
-    success_url = "Post/"
-    fields = ['title, subtitle, body, tags']
-
-class PostDelete(DeleteView):
-    model= Post
-    success_url = "/Post/"
+from Post import models
+from django.views.generic import ListView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 def inicio(request):
     return render(request, "Post/inicio.html")
 
-def comment(request,id):
-    comment=Comment.objects.get(id=id)
-    return render(request, 'comment.html', {"comment":comment})
+class PostList(ListView):
+    model= models.Post
+    template_name = "Post/postList.html"
 
-def postFormulario(request):
+class PostDetail(DetailView):
+    model= models.Post
+    template_name = "Post/postDetail.html"
 
-    if(request.method == "POST"):
+class PostCreate(CreateView):
+    model= models.Post
+    success_url = "/Post/postList/"
+    fields = ['title', 'subtitle', 'body', 'tags']
 
-        miFormulario = PostFormulario(request.POST)
+class PostUpdate(UpdateView):
+    model= models.Post
+    success_url = "/Post/postList/"
+    fields = ['title', 'subtitle', 'body', 'tags']
 
-        if miFormulario.is_valid():
+class PostDelete(DeleteView):
+    model= models.Post
+    success_url = "/Post/postList/"
 
-            informacion = miFormulario.cleaned_data
+class TagList(ListView):
+    model= models.Tag
+    template_name = "Post/tagList.html"
 
-            post = Post(title=informacion['title'], subtitle=informacion['subtitle'], body=informacion['body'])
-            post.save()
-            posts=Post.objects.all()
-            return render(request,'index.html',{"posts":posts})
+class TagCreate(CreateView):
+    model= models.Tag
+    success_url = "/Post/tagList/"
+    fields = ['name']
 
-    else:
-        
-        miFormulario = PostFormulario()
+class TagDelete(DeleteView):
+    model= models.Tag
+    success_url = "/Post/tagList/"
 
+class CommentList(ListView):
+    model= models.Comment
+    template_name = "Post/commentList.html"
 
-    return render(request, "postFormulario.html", {"miFormulario":miFormulario})
+class CommentCreate(CreateView):
+    model= models.Comment
+    success_url = "/Post/commentList/"
+    fields = ['name','post']
 
-def tagFormulario(request):
-
-    if(request.method == "POST"):
-
-        miFormulario = TagFormulario(request.POST)
-
-        if miFormulario.is_valid():
-
-            informacion = miFormulario.cleaned_data
-
-            tag = Tag(name=informacion['name'])
-            tag.save()
-            return render(request,'inicio.html')
-
-    else:
-        
-        miFormulario = TagFormulario()
-
-
-    return render(request, "tagFormulario.html", {"miFormulario":miFormulario})
-
-def commentFormulario(request):
-
-    if(request.method == "POST"):
-
-        miFormulario = CommentFormulario(request.POST)
-
-        if miFormulario.is_valid():
-
-            informacion = miFormulario.cleaned_data
-
-            comment = Comment(text=informacion['text'])
-            comment.save()
-            return render(request,'inicio.html')
-
-    else:
-        
-        miFormulario = CommentFormulario()
-
-
-    return render(request, "commentFormulario.html", {"miFormulario":miFormulario})
-
-def busquedaPost(request):
-    return render(request, "busquedaPost.html")
-
-def buscar(request):
-
-    if request.GET["title"]:
-
-        title=request.GET["title"]
-        posts = Post.objects.filter(title=title)
-
-        return render(request, "resultadosBusqueda.html", {"posts":posts, "title":title})
-
-    else:
-
-        respuesta= "No enviaste datos"
-
-    return HttpResponse(respuesta)
+class CommentDelete(DeleteView):
+    model= models.Comment
+    success_url = "/Post/commentList/"
