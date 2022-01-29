@@ -12,4 +12,3 @@ class TagForm(forms.Form):
 
 class CommentForm(forms.Form):
     text=forms.CharField(widget=forms.Textarea)
-    post=forms.ModelChoiceField(queryset=models.Post.objects.all())

@@ -14,6 +14,10 @@
     {% endfor %}
 
     <p>
+        <a href="{% url 'Comments' post.id %}">Ver Comentarios</a>
+    </p>
+
+    <p>
         <a href="{% url 'Posts' %}">Regresar</a>
     </p>
     

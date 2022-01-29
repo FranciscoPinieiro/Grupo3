@@ -4,9 +4,9 @@
 
 {% block contenidoQueCambia %}
 
-<form method="POST">{% csrf_token %}
+<form action="{% url 'CommentForm' post %}" method="POST">{% csrf_token %}
     <table>
-        {{ form.as_p }}
+        {{ commentForm.as_table }}
     </table>
     
 

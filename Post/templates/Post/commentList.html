@@ -6,17 +6,17 @@
 
 <h1> Comments </h1>
 <ul>
-    {% for comment in object_list %}
+    {% for comment in comments %}
         <li>
-            <p>{{ comment.name }}</p>
+            <p>{{ comment.text }}</p>
             <p>
-                <a href="{% url 'CommentDelete' tag.id %}">Borrar</a>
+                <a href="{% url 'CommentDelete' comment.id %}">Borrar</a>
             </p>
         </li>
 
     {% endfor %}
 </ul>
 
-<a href="{% url 'CommentCreate' %}">Nuevo Comment</a>
+<a href="{% url 'CommentForm' post %}">Nuevo Comentario</a>
 
 {% endblock %}

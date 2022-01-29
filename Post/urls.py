@@ -11,7 +11,7 @@ urlpatterns = [
     path('tagList/',views.TagList.as_view(), name='Tags'),
     path('tagCreate/', views.TagCreate.as_view(), name='TagCreate'),
     path('tagDelete/<pk>/', views.TagDelete.as_view(), name='TagDelete'),
-    path('commentList/',views.CommentList.as_view(), name='Comments'),
-    path('commentCreate/', views.CommentCreate.as_view(), name='CommentCreate'),
+    path('commentList/<post>',views.commentList, name='Comments'),
+    path('commentForm/<post>', views.commentForm, name='CommentForm'),
     path('commentDelete/<pk>/', views.CommentDelete.as_view(), name='CommentDelete'),
 ]

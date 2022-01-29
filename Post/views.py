@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from Post import models
+from Post import forms
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -42,15 +43,32 @@ class TagDelete(DeleteView):
     model= models.Tag
     success_url = "/Post/tagList/"
 
-class CommentList(ListView):
-    model= models.Comment
-    template_name = "Post/commentList.html"
-
-class CommentCreate(CreateView):
-    model= models.Comment
-    success_url = "/Post/commentList/"
-    fields = ['name','post']
-
 class CommentDelete(DeleteView):
     model= models.Comment
-    success_url = "/Post/commentList/"
+    success_url = "/Post/postList/"
+
+def commentList(request, post):
+    comments=models.Comment.objects.filter(post=post)
+    return render(request,"Post/commentList.html",{"comments":comments, "post":post})
+
+def commentForm(request, post):
+
+    if(request.method == "POST"):
+
+        commentForm = forms.CommentForm(request.POST)
+
+        if commentForm.is_valid():
+
+            informacion = commentForm.cleaned_data
+            myPost = models.Post.objects.get(id=post)
+            comment = models.Comment(text=informacion['text'], post=myPost)
+            comment.save()
+            comments=models.Comment.objects.filter(post=post)
+            return render(request,"Post/commentList.html",{"comments":comments, "post":post})
+
+    else:
+        
+        commentForm = forms.CommentForm()
+
+
+    return render(request, "Post/comment_form.html", {"commentForm":commentForm, "post":post})
