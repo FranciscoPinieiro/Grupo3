@@ -1,5 +1,7 @@
 from django import forms
 from Post import models
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 class PostForm(forms.Form):
     title=forms.CharField(max_length=40)
@@ -12,3 +14,23 @@ class TagForm(forms.Form):
 
 class CommentForm(forms.Form):
     text=forms.CharField(widget=forms.Textarea)
+
+class UserRegisterForm(UserCreationForm):
+    email= forms.EmailField()
+    password1=forms.CharField(label='Contraseña',widget=forms.PasswordInput)
+    password2=forms.CharField(label='Repetir la Contraseña',widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields= ['username','email','password1','password2']
+        help_texts = {k:""for k in fields}
+
+class UserEditForm(UserCreationForm):
+    email= forms.EmailField(label="Modificar E-mail")
+    password1=forms.CharField(label='Contraseña',widget=forms.PasswordInput)
+    password2=forms.CharField(label='Repetir la Contraseña',widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields= ['email','password1','password2']
+        help_texts = {k:""for k in fields}

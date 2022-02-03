@@ -4,19 +4,18 @@
 
 {% block contenidoQueCambia %}
 
-<h1> Comments </h1>
-<ul>
+<div class="text-center">
+    <h1> Comentarios </h1>
+
     {% for comment in comments %}
-        <li>
             <p>{{ comment.text }}</p>
             <p>
                 <a href="{% url 'CommentDelete' comment.id %}">Borrar</a>
             </p>
-        </li>
 
     {% endfor %}
-</ul>
 
-<a href="{% url 'CommentForm' post %}">Nuevo Comentario</a>
+    <a href="{% url 'CommentForm' post %}">Nuevo Comentario</a>
+</div>
 
 {% endblock %}

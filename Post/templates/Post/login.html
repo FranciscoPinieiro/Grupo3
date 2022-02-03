@@ -1,0 +1,12 @@
+{% extends "Post/padre.html" %}
+
+{% load static %}
+
+{% block contenidoQueCambia %}
+<form action="" method="POST">{% csrf_token %}
+    {{form.as_p}}
+
+    <button type="submit">Iniciar sesion</button>
+
+</form>
+{% endblock %}

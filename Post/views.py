@@ -4,7 +4,11 @@ from Post import forms
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def inicio(request):
     return render(request, "Post/inicio.html")
 
@@ -72,3 +76,72 @@ def commentForm(request, post):
 
 
     return render(request, "Post/comment_form.html", {"commentForm":commentForm, "post":post})
+
+def login_request(request):
+
+    if request.method =="POST":
+        form = AuthenticationForm(request, data = request.POST)
+
+        if form.is_valid():
+            usuario = form.cleaned_data.get('username')
+            contra = form.cleaned_data.get('password')
+
+            user = authenticate(username=usuario, password=contra)
+
+            if user is not None:
+                login(request, user)
+
+                return render(request,"Post/inicio.html", {"mensaje":f"Bienvenido {usuario}"})
+            else:
+                return render(request,"Post/Inicio.html", {"mensaje":"error,datos incorrectos"})
+        else:
+            return render(request, "Post/Inicio.html", {"mensaje":"Error, formulario erroneo"})
+    
+    form=AuthenticationForm()
+    return render(request,"Post/login.html",{'form':form})
+
+def register(request):
+
+    if request.method=='POST':
+
+        #form=UserCreationForm(request.POST)
+        form=forms.UserRegisterForm(request.POST)
+
+        if form.is_valid():
+
+            username =form.cleaned_data['username']
+            form.save()
+
+            return render (request, "Post/inicio.html" , {"mensaje":"Usuario Creado"})
+        
+    else:
+            form=forms.UserRegisterForm()
+
+        
+    return render (request, "Post/registro.html" , {"form":form})
+
+@login_required
+def editarPerfil(request):
+
+    usuario=request.user
+
+    if request.method=='POST':
+
+        #form=UserCreationForm(request.POST)
+        userEditForm=forms.UserEditForm(request.POST)
+
+        if userEditForm.is_valid():
+
+            informacion = userEditForm.cleaned_data
+            usuario.email = informacion['email']
+            usuario.password1 = informacion['password1']
+            usuario.password2 = informacion['password2']
+            usuario.save()
+
+            return render (request, "Post/inicio.html" , {"mensaje":"Usuario modificado"})
+        
+    else:
+            userEditForm=forms.UserEditForm(initial={'email':usuario.email})
+
+        
+    return render(request, "Post/editarPerfil.html" , {"userEditForm":userEditForm, "usuario":usuario})

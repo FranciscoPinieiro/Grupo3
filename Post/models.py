@@ -11,6 +11,7 @@ class Post(models.Model):
     subtitle=models.CharField(max_length=40)
     body=models.TextField()
     tags=models.ManyToManyField(Tag)
+    image=models.ImageField(upload_to='post', null=True, blank=True)
 
     def __str__(self):
         return self.title
