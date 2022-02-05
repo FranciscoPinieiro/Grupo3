@@ -5,16 +5,21 @@
 {% block contenidoQueCambia %}
 
 <div class="text-center">
-    <h1> Posts </h1>
-    {% for post in object_list %}
+    {% if object_list.count == 0 %}
+        <h3>No hay paginas aun</h3>
+    {% else %}
+        <h1> Posts </h1>
+        {% for post in object_list %}
             <p>{{ post.title }}</p>
             <p>
                 <a href="{% url 'PostDetail' post.id %}">Ver</a>
                 <a href="{% url 'PostUpdate' post.id %}">Editar</a>
                 <a href="{% url 'PostDelete' post.id %}">Borrar</a>
             </p>
-    {% endfor %}
+        {% endfor %}
+    {% endif %}
     <a href="{% url 'PostCreate' %}">Nuevo Post</a>
+
 </div>
 
 {% endblock %}

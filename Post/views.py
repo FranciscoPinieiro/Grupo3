@@ -5,12 +5,14 @@ from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 @login_required
 def inicio(request):
-    return render(request, "Post/inicio.html")
+    avatar=models.Avatar.objects.filter(user=request.user.id)
+    return render(request, "Post/inicio.html", {"imagenURL":avatar[0].imagen.url})
 
 class PostList(ListView):
     model= models.Post
@@ -23,12 +25,16 @@ class PostDetail(DetailView):
 class PostCreate(CreateView):
     model= models.Post
     success_url = "/Post/postList/"
-    fields = ['title', 'subtitle', 'body', 'tags']
+    fields = ['title', 'subtitle', 'body', 'tags', 'image']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(PostCreate, self).form_valid(form)
 
 class PostUpdate(UpdateView):
     model= models.Post
     success_url = "/Post/postList/"
-    fields = ['title', 'subtitle', 'body', 'tags']
+    fields = ['title', 'subtitle', 'body', 'tags', 'image']
 
 class PostDelete(DeleteView):
     model= models.Post
@@ -109,7 +115,6 @@ def register(request):
 
         if form.is_valid():
 
-            username =form.cleaned_data['username']
             form.save()
 
             return render (request, "Post/inicio.html" , {"mensaje":"Usuario Creado"})
@@ -127,7 +132,6 @@ def editarPerfil(request):
 
     if request.method=='POST':
 
-        #form=UserCreationForm(request.POST)
         userEditForm=forms.UserEditForm(request.POST)
 
         if userEditForm.is_valid():
@@ -136,12 +140,47 @@ def editarPerfil(request):
             usuario.email = informacion['email']
             usuario.password1 = informacion['password1']
             usuario.password2 = informacion['password2']
+            usuario.first_name = informacion['first_name']
+            usuario.last_name = informacion['last_name']
+
             usuario.save()
 
             return render (request, "Post/inicio.html" , {"mensaje":"Usuario modificado"})
         
     else:
-            userEditForm=forms.UserEditForm(initial={'email':usuario.email})
+            userEditForm=forms.UserEditForm(initial={
+                'email':usuario.email,
+                'first_name':usuario.first_name,
+                'last_name':usuario.last_name,
+                })
 
         
     return render(request, "Post/editarPerfil.html" , {"userEditForm":userEditForm, "usuario":usuario})
+
+def avatarForm(request):
+
+    if(request.method == "POST"):
+
+        avatarForm = forms.AvatarForm(request.POST, request.FILES)
+
+        if avatarForm.is_valid():
+
+            informacion = avatarForm.cleaned_data
+            user = User.objects.get(username=request.user)
+            models.Avatar.objects.filter(user=user.id).delete()
+            avatar = models.Avatar(user=user, imagen=informacion['imagen'], desc=informacion['desc'], link=informacion['link'])
+            avatar.save()
+            userEditForm=forms.UserEditForm(initial={
+                'email':user.email,
+                'first_name':user.first_name,
+                'last_name':user.last_name,
+                })
+            return render(request,"Post/editarPerfil.html",{"userEditForm":userEditForm, "usuario":user})
+
+    else:
+        user = User.objects.get(username=request.user)
+        avatar = models.Avatar.objects.get(user=user.id)
+        avatarForm = forms.AvatarForm(initial={'imagen':avatar.imagen,'desc':avatar.desc,'link':avatar.link})
+
+
+    return render(request, "Post/agregarAvatar.html", {"avatarForm":avatarForm})
