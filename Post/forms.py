@@ -22,14 +22,11 @@ class UserEditForm(UserCreationForm):
     password2=forms.CharField(label='Repetir la Contraseña',widget=forms.PasswordInput)
     first_name=forms.CharField(label='Nombre')
     last_name=forms.CharField(label='Apellido')
-    
+    imagen=forms.ImageField()
+    desc=forms.CharField(widget=forms.Textarea, label='Descripcion')
+    link=forms.URLField(label='Pagina web personal')
 
     class Meta:
         model = User
         fields= ['email','password1','password2','first_name','last_name']
         help_texts = {k:""for k in fields}
-
-class AvatarForm(forms.Form):
-    imagen=forms.ImageField()
-    desc=forms.CharField(widget=forms.Textarea, label='Descripcion')
-    link=forms.URLField(label='Pagina web personal')

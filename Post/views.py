@@ -132,7 +132,7 @@ def editarPerfil(request):
 
     if request.method=='POST':
 
-        userEditForm=forms.UserEditForm(request.POST)
+        userEditForm=forms.UserEditForm(request.POST, request.FILES)
 
         if userEditForm.is_valid():
 
@@ -145,42 +145,30 @@ def editarPerfil(request):
 
             usuario.save()
 
-            return render (request, "Post/inicio.html" , {"mensaje":"Usuario modificado"})
-        
-    else:
-            userEditForm=forms.UserEditForm(initial={
-                'email':usuario.email,
-                'first_name':usuario.first_name,
-                'last_name':usuario.last_name,
-                })
-
-        
-    return render(request, "Post/editarPerfil.html" , {"userEditForm":userEditForm, "usuario":usuario})
-
-def avatarForm(request):
-
-    if(request.method == "POST"):
-
-        avatarForm = forms.AvatarForm(request.POST, request.FILES)
-
-        if avatarForm.is_valid():
-
-            informacion = avatarForm.cleaned_data
             user = User.objects.get(username=request.user)
             models.Avatar.objects.filter(user=user.id).delete()
             avatar = models.Avatar(user=user, imagen=informacion['imagen'], desc=informacion['desc'], link=informacion['link'])
             avatar.save()
-            userEditForm=forms.UserEditForm(initial={
-                'email':user.email,
-                'first_name':user.first_name,
-                'last_name':user.last_name,
-                })
-            return render(request,"Post/editarPerfil.html",{"userEditForm":userEditForm, "usuario":user})
 
+            return render (request, "Post/inicio.html" , {"mensaje":"Usuario modificado"})
+        
     else:
-        user = User.objects.get(username=request.user)
-        avatar = models.Avatar.objects.get(user=user.id)
-        avatarForm = forms.AvatarForm(initial={'imagen':avatar.imagen,'desc':avatar.desc,'link':avatar.link})
+            avatar=models.Avatar.objects.filter(user=request.user.id)
+            if avatar:
+                userEditForm=forms.UserEditForm(initial={
+                    'email':usuario.email,
+                    'first_name':usuario.first_name,
+                    'last_name':usuario.last_name,
+                    'imagen':avatar[0].imagen,
+                    'desc':avatar[0].desc,
+                    'link':avatar[0].link
+                    })
+            else:
+                userEditForm=forms.UserEditForm(initial={
+                    'email':usuario.email,
+                    'first_name':usuario.first_name,
+                    'last_name':usuario.last_name
+                    })
 
-
-    return render(request, "Post/agregarAvatar.html", {"avatarForm":avatarForm})
+        
+    return render(request, "Post/editarPerfil.html" , {"userEditForm":userEditForm, "usuario":usuario})
