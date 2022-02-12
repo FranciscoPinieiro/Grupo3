@@ -3,20 +3,13 @@
 {% load static %}
 
 {% block contenidoQueCambia %}
-
-<h1> Tags </h1>
-<ul>
-    {% for tag in object_list %}
-        <li>
-            <p>{{ tag.name }}</p>
+<div class="text-center">
+    <h1> Tags </h1>
+        {% for tag in object_list %}
             <p>
-                <a href="{% url 'TagDelete' tag.id %}">Borrar</a>
+                {{ tag.name }} <a href="{% url 'TagDelete' tag.id %}">Borrar</a>
             </p>
-        </li>
-
-    {% endfor %}
-</ul>
-
-<a href="{% url 'TagCreate' %}">Nueva Tag</a>
-
+        {% endfor %}
+    <a href="{% url 'TagCreate' %}">Nueva Tag</a>
+</div>
 {% endblock %}

@@ -19,4 +19,5 @@ urlpatterns = [
     path('register/',views.register, name='Register'),
     path('logout/',LogoutView.as_view(template_name="Post/logout.html"), name='Logout'),
     path('editarPerfil/',views.editarPerfil, name='EditarPerfil'),
+    path('verPerfil/',views.verPerfil, name='VerPerfil'),
 ]

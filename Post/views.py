@@ -8,59 +8,93 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 @login_required
 def inicio(request):
     avatar=models.Avatar.objects.filter(user=request.user.id)
-    return render(request, "Post/inicio.html", {"imagenURL":avatar[0].imagen.url})
+    if avatar:
+        return render(request, "Post/inicio.html", {"imagenURL":avatar[0].imagen.url})
+    else:
+        return render(request, "Post/inicio.html")
+
 
 class PostList(ListView):
     model= models.Post
     template_name = "Post/postList.html"
 
+
 class PostDetail(DetailView):
     model= models.Post
     template_name = "Post/postDetail.html"
 
-class PostCreate(CreateView):
+
+class PostCreate(CreateView, UserPassesTestMixin):
     model= models.Post
     success_url = "/Post/postList/"
     fields = ['title', 'subtitle', 'body', 'tags', 'image']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super(PostCreate, self).form_valid(form)
+        grupos = self.request.user.groups.all()
+        if 'Admin' in grupos:
+            return super(PostCreate, self).form_valid(form)
+        else:
+            return super(PostCreate, self).form_invalid(form)
+
 
 class PostUpdate(UpdateView):
     model= models.Post
     success_url = "/Post/postList/"
     fields = ['title', 'subtitle', 'body', 'tags', 'image']
 
+    def form_valid(self, form):
+        grupos = self.request.user.groups.all()
+        if 'Admin' in grupos:
+            return super(PostUpdate, self).form_valid(form)
+        else:
+            return super(PostUpdate, self).form_invalid(form)
+
+
 class PostDelete(DeleteView):
     model= models.Post
     success_url = "/Post/postList/"
 
+    def form_valid(self, form):
+        grupos = self.request.user.groups.all()
+        if 'Admin' in grupos:
+            return super(PostDelete, self).form_valid(form)
+        else:
+            return super(PostDelete, self).form_invalid(form)
+
+
 class TagList(ListView):
     model= models.Tag
     template_name = "Post/tagList.html"
+
 
 class TagCreate(CreateView):
     model= models.Tag
     success_url = "/Post/tagList/"
     fields = ['name']
 
+
 class TagDelete(DeleteView):
     model= models.Tag
     success_url = "/Post/tagList/"
+
 
 class CommentDelete(DeleteView):
     model= models.Comment
     success_url = "/Post/postList/"
 
+@login_required
 def commentList(request, post):
     comments=models.Comment.objects.filter(post=post)
     return render(request,"Post/commentList.html",{"comments":comments, "post":post})
 
+@login_required
 def commentForm(request, post):
 
     if(request.method == "POST"):
@@ -114,8 +148,11 @@ def register(request):
         form=forms.UserRegisterForm(request.POST)
 
         if form.is_valid():
-
+            informacion = form.cleaned_data
             form.save()
+            user = User.objects.get(username=informacion['username'])
+            my_group = Group.objects.get(name='Usuarios') 
+            my_group.user_set.add(user)
 
             return render (request, "Post/inicio.html" , {"mensaje":"Usuario Creado"})
         
@@ -124,6 +161,15 @@ def register(request):
 
         
     return render (request, "Post/registro.html" , {"form":form})
+
+@login_required
+def verPerfil(request):
+    usuario = request.user
+    avatar = models.Avatar.objects.filter(user=request.user.id)
+    if avatar:
+        return render(request, "Post/verPerfil.html", {'usuario':usuario,"avatar":avatar[0]})
+    else:
+        return render(request, "Post/verPerfil.html", {'usuario':usuario})
 
 @login_required
 def editarPerfil(request):
@@ -146,11 +192,18 @@ def editarPerfil(request):
             usuario.save()
 
             user = User.objects.get(username=request.user)
-            models.Avatar.objects.filter(user=user.id).delete()
-            avatar = models.Avatar(user=user, imagen=informacion['imagen'], desc=informacion['desc'], link=informacion['link'])
-            avatar.save()
-
-            return render (request, "Post/inicio.html" , {"mensaje":"Usuario modificado"})
+            avatar = models.Avatar.objects.filter(user=user.id)
+            if avatar:
+                if informacion['imagen']:
+                    avatar[0].imagen = informacion['imagen']
+                avatar[0].desc = informacion['desc']
+                avatar[0].link = informacion['link']
+                avatar[0].save()
+            else:
+                avatar = models.Avatar(user=user, imagen=informacion['imagen'], desc=informacion['desc'], link=informacion['link'])
+                avatar.save()
+            avatar = models.Avatar.objects.filter(user=user.id)
+            return render(request, "Post/verPerfil.html", {'usuario':user,'avatar':avatar[0]})
         
     else:
             avatar=models.Avatar.objects.filter(user=request.user.id)

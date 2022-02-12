@@ -23,7 +23,7 @@ class UserEditForm(UserCreationForm):
     password2=forms.CharField(label='Repetir la Contraseña',widget=forms.PasswordInput)
     first_name=forms.CharField(label='Nombre')
     last_name=forms.CharField(label='Apellido')
-    imagen=forms.ImageField()
+    imagen=forms.ImageField(required=False)
     desc=forms.CharField(widget=CKEditorWidget(), label='Descripcion')
     link=forms.URLField(label='Pagina web personal')
 

@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load group_filter %}
+
 {% block contenidoQueCambia %}
 
 <div class="text-center">
@@ -10,16 +12,18 @@
     {% else %}
         <h1> Posts </h1>
         {% for post in object_list %}
-            <p>{{ post.title }}</p>
             <p>
-                <a href="{% url 'PostDetail' post.id %}">Ver</a>
-                <a href="{% url 'PostUpdate' post.id %}">Editar</a>
-                <a href="{% url 'PostDelete' post.id %}">Borrar</a>
+                <a href="{% url 'PostDetail' post.id %}">{{ post.title }}</a>
+                {% if user|has_group:'Admin' %}
+                    <a href="{% url 'PostUpdate' post.id %}">Editar</a>
+                    <a href="{% url 'PostDelete' post.id %}">Borrar</a>
+                {% endif %}
             </p>
         {% endfor %}
     {% endif %}
-    <a href="{% url 'PostCreate' %}">Nuevo Post</a>
-
+    {% if user|has_group:'Admin' %}
+        <a href="{% url 'PostCreate' %}">Nuevo Post</a>
+    {% endif %}
 </div>
 
 {% endblock %}
