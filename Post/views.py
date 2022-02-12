@@ -7,6 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -19,17 +20,17 @@ def inicio(request):
     else:
         return render(request, "Post/inicio.html")
 
-
+@method_decorator(login_required, name='dispatch')
 class PostList(ListView):
     model= models.Post
     template_name = "Post/postList.html"
 
-
+@method_decorator(login_required, name='dispatch')
 class PostDetail(DetailView):
     model= models.Post
     template_name = "Post/postDetail.html"
 
-
+@method_decorator(login_required, name='dispatch')
 class PostCreate(CreateView, UserPassesTestMixin):
     model= models.Post
     success_url = "/Post/postList/"
@@ -37,13 +38,9 @@ class PostCreate(CreateView, UserPassesTestMixin):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        grupos = self.request.user.groups.all()
-        if 'Admin' in grupos:
-            return super(PostCreate, self).form_valid(form)
-        else:
-            return super(PostCreate, self).form_invalid(form)
+        return super(PostCreate, self).form_valid(form)
 
-
+@method_decorator(login_required, name='dispatch')
 class PostUpdate(UpdateView):
     model= models.Post
     success_url = "/Post/postList/"
@@ -56,7 +53,7 @@ class PostUpdate(UpdateView):
         else:
             return super(PostUpdate, self).form_invalid(form)
 
-
+@method_decorator(login_required, name='dispatch')
 class PostDelete(DeleteView):
     model= models.Post
     success_url = "/Post/postList/"
@@ -68,23 +65,28 @@ class PostDelete(DeleteView):
         else:
             return super(PostDelete, self).form_invalid(form)
 
-
+@method_decorator(login_required, name='dispatch')
 class TagList(ListView):
     model= models.Tag
     template_name = "Post/tagList.html"
 
-
+@method_decorator(login_required, name='dispatch')
 class TagCreate(CreateView):
     model= models.Tag
     success_url = "/Post/tagList/"
     fields = ['name']
 
-
+@method_decorator(login_required, name='dispatch')
 class TagDelete(DeleteView):
     model= models.Tag
     success_url = "/Post/tagList/"
 
+@login_required
+def postTagList(request,tag):
+    blogs = models.Post.objects.filter(tags=tag)
+    return render(request,"Post/postList.html",{'object_list':blogs})
 
+@method_decorator(login_required, name='dispatch')
 class CommentDelete(DeleteView):
     model= models.Comment
     success_url = "/Post/postList/"
@@ -130,8 +132,11 @@ def login_request(request):
 
             if user is not None:
                 login(request, user)
-
-                return render(request,"Post/inicio.html", {"mensaje":f"Bienvenido {usuario}"})
+                avatar=models.Avatar.objects.filter(user=request.user.id)
+                if avatar:
+                    return render(request, "Post/inicio.html", {"imagenURL":avatar[0].imagen.url})
+                else:
+                    return render(request, "Post/inicio.html")
             else:
                 return render(request,"Post/Inicio.html", {"mensaje":"error,datos incorrectos"})
         else:
