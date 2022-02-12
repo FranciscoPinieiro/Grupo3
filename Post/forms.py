@@ -2,9 +2,10 @@ from django import forms
 from Post import models
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from ckeditor.widgets import CKEditorWidget
 
 class CommentForm(forms.Form):
-    text=forms.CharField(widget=forms.Textarea)
+    text=forms.CharField(widget=CKEditorWidget())
 
 class UserRegisterForm(UserCreationForm):
     email= forms.EmailField()
@@ -23,7 +24,7 @@ class UserEditForm(UserCreationForm):
     first_name=forms.CharField(label='Nombre')
     last_name=forms.CharField(label='Apellido')
     imagen=forms.ImageField()
-    desc=forms.CharField(widget=forms.Textarea, label='Descripcion')
+    desc=forms.CharField(widget=CKEditorWidget(), label='Descripcion')
     link=forms.URLField(label='Pagina web personal')
 
     class Meta:
