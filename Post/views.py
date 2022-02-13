@@ -44,9 +44,9 @@ class PostCreate(CreateView, UserPassesTestMixin):
         form.instance.user = self.request.user
         grupos = self.request.user.groups.all()
         if 'Admin' in grupos:
-            return super(PostUpdate, self).form_valid(form)
+            return super(PostCreate, self).form_valid(form)
         else:
-            return super(PostUpdate, self).form_invalid(form)
+            return super(PostCreate, self).form_invalid(form)
 
 @method_decorator(login_required, name='dispatch')
 class PostUpdate(UpdateView):
@@ -86,9 +86,9 @@ class TagCreate(CreateView):
     def form_valid(self, form):
         grupos = self.request.user.groups.all()
         if 'Admin' in grupos:
-            return super(PostDelete, self).form_valid(form)
+            return super(TagCreate, self).form_valid(form)
         else:
-            return super(PostDelete, self).form_invalid(form)
+            return super(TagCreate, self).form_invalid(form)
 
 @method_decorator(login_required, name='dispatch')
 class TagDelete(DeleteView):
@@ -97,9 +97,9 @@ class TagDelete(DeleteView):
     def form_valid(self, form):
         grupos = self.request.user.groups.all()
         if 'Admin' in grupos:
-            return super(PostDelete, self).form_valid(form)
+            return super(TagDelete, self).form_valid(form)
         else:
-            return super(PostDelete, self).form_invalid(form)
+            return super(TagDelete, self).form_invalid(form)
 
 @login_required
 def postTagList(request,tag):
