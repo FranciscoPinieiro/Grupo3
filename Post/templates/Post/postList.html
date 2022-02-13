@@ -1,0 +1,29 @@
+{% extends "Post/padre.html" %}
+
+{% load static %}
+
+{% load group_filter %}
+
+{% block contenidoQueCambia %}
+
+<div class="text-center">
+    {% if object_list.count == 0 %}
+        <h3>No hay paginas aun</h3>
+    {% else %}
+        <h1> Posts </h1>
+        {% for post in object_list %}
+            <p>
+                <a href="{% url 'PostDetail' post.id %}">{{ post.title }}</a>
+                {% if user|has_group:'Admin' %}
+                    <a href="{% url 'PostUpdate' post.id %}">Editar</a>
+                    <a href="{% url 'PostDelete' post.id %}">Borrar</a>
+                {% endif %}
+            </p>
+        {% endfor %}
+    {% endif %}
+    {% if user|has_group:'Admin' %}
+        <button href="{% url 'PostCreate' %}">Nuevo Post</button>
+    {% endif %}
+</div>
+
+{% endblock %}

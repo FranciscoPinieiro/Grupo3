@@ -1,0 +1,20 @@
+{% extends 'Post/padre.html' %}
+
+{% load static %}
+
+{% block contenidoQueCambia %}
+<h2>Perfil de {{user.username}}</h2>
+<table>
+    <p>Nombre: {{user.first_name}}</p>
+    <p>Apellido: {{user.last_name}}</p>
+    <p>Email: {{user.email}}</p>
+    <p>Descripcion: {{avatar.desc|safe}}</p>
+    <p>Link: {{avatar.link}}</p>
+    <p>Avatar</p>
+    <img height="100px" src="{{avatar.imagen.url}}">
+</table>
+<p>
+    <a href="{% url 'EditarPerfil' %}">Editar Perfil</a>
+</p>
+
+{% endblock contenidoQueCambia %}

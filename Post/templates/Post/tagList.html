@@ -1,0 +1,22 @@
+{% extends "Post/padre.html" %}
+
+{% load static %}
+
+{% load group_filter %}
+
+{% block contenidoQueCambia %}
+<div class="text-center">
+    <h1> Categorias </h1>
+        {% for tag in object_list %}
+            <p>
+                <a href="{% url 'PostTagList' tag.id %}">{{ tag.name }}</a>
+                {% if user|has_group:'Admin' %}
+                    <a href="{% url 'TagDelete' tag.id %}"> Borrar</a>
+                {% endif %}
+            </p>
+        {% endfor %}
+    {% if user|has_group:'Admin' %}
+        <button href="{% url 'TagCreate' %}">Nueva Tag</button>
+    {% endif %}
+</div>
+{% endblock %}

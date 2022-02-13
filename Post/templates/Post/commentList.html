@@ -1,0 +1,21 @@
+{% extends "Post/padre.html" %}
+
+{% load static %}
+
+{% block contenidoQueCambia %}
+
+<div class="text-center">
+    <h1> Comentarios </h1>
+
+    {% for comment in comments %}
+            <p>{{ comment.text }}</p>
+            <p>
+                <a href="{% url 'CommentDelete' comment.id %}">Borrar</a>
+            </p>
+
+    {% endfor %}
+
+    <a href="{% url 'CommentForm' post %}">Nuevo Comentario</a>
+</div>
+
+{% endblock %}
