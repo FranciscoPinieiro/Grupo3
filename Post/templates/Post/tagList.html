@@ -11,12 +11,12 @@
             <p>
                 <a href="{% url 'PostTagList' tag.id %}">{{ tag.name }}</a>
                 {% if user|has_group:'Admin' %}
-                    <a href="{% url 'TagDelete' tag.id %}">Borrar</a>
+                    <a href="{% url 'TagDelete' tag.id %}"> Borrar</a>
                 {% endif %}
             </p>
         {% endfor %}
     {% if user|has_group:'Admin' %}
-        <a href="{% url 'TagCreate' %}">Nueva Tag</a>
+        <button href="{% url 'TagCreate' %}">Nueva Tag</button>
     {% endif %}
 </div>
 {% endblock %}

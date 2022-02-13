@@ -15,11 +15,13 @@
         {% endfor %}
     </p>
     <p>
-        Creado por: {{ post.user.username }}
+        Creado por: {{ post.user.username }} ----
         Fecha: {{ post.date }}
     </p>
     <p>
         <a href="{% url 'Comments' post.id %}">Ver Comentarios</a>
+    </p>
+    <p>
         <a href="{% url 'Posts' %}">Regresar</a>
     </p>
 </div>

@@ -14,11 +14,15 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 @login_required
 def inicio(request):
+    user=models.User.objects.get(id=request.user.id)
     avatar=models.Avatar.objects.filter(user=request.user.id)
     if avatar:
-        return render(request, "Post/inicio.html", {"imagenURL":avatar[0].imagen.url})
+        return render(request, "Post/inicio.html", {"imagenURL":avatar[0].imagen.url, "user":user})
     else:
         return render(request, "Post/inicio.html")
+
+def about(request):
+    return render(request, "Post/about.html")
 
 @method_decorator(login_required, name='dispatch')
 class PostList(ListView):
@@ -38,7 +42,11 @@ class PostCreate(CreateView, UserPassesTestMixin):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super(PostCreate, self).form_valid(form)
+        grupos = self.request.user.groups.all()
+        if 'Admin' in grupos:
+            return super(PostUpdate, self).form_valid(form)
+        else:
+            return super(PostUpdate, self).form_invalid(form)
 
 @method_decorator(login_required, name='dispatch')
 class PostUpdate(UpdateView):
@@ -75,11 +83,23 @@ class TagCreate(CreateView):
     model= models.Tag
     success_url = "/Post/tagList/"
     fields = ['name']
+    def form_valid(self, form):
+        grupos = self.request.user.groups.all()
+        if 'Admin' in grupos:
+            return super(PostDelete, self).form_valid(form)
+        else:
+            return super(PostDelete, self).form_invalid(form)
 
 @method_decorator(login_required, name='dispatch')
 class TagDelete(DeleteView):
     model= models.Tag
     success_url = "/Post/tagList/"
+    def form_valid(self, form):
+        grupos = self.request.user.groups.all()
+        if 'Admin' in grupos:
+            return super(PostDelete, self).form_valid(form)
+        else:
+            return super(PostDelete, self).form_invalid(form)
 
 @login_required
 def postTagList(request,tag):
@@ -133,12 +153,13 @@ def login_request(request):
             if user is not None:
                 login(request, user)
                 avatar=models.Avatar.objects.filter(user=request.user.id)
+                user=models.User.objects.get(id=request.user.id)
                 if avatar:
-                    return render(request, "Post/inicio.html", {"imagenURL":avatar[0].imagen.url})
+                    return render(request, "Post/inicio.html", {"imagenURL":avatar[0].imagen.url, "user":user})
                 else:
-                    return render(request, "Post/inicio.html")
+                    return render(request, "Post/inicio.html",{"user":user})
             else:
-                return render(request,"Post/Inicio.html", {"mensaje":"error,datos incorrectos"})
+                return render(request,"Post/Inicio.html", {"mensaje":"Error, datos incorrectos"})
         else:
             return render(request, "Post/Inicio.html", {"mensaje":"Error, formulario erroneo"})
     
@@ -159,7 +180,7 @@ def register(request):
             my_group = Group.objects.get(name='Usuarios') 
             my_group.user_set.add(user)
 
-            return render (request, "Post/inicio.html" , {"mensaje":"Usuario Creado"})
+            return render (request, "Post/inicio.html")
         
     else:
             form=forms.UserRegisterForm()
