@@ -17,7 +17,7 @@ def inicio(request):
     user=models.User.objects.get(id=request.user.id)
     avatar=models.Avatar.objects.filter(user=request.user.id)
     if avatar:
-        return render(request, "Post/inicio.html", {"imagenURL":avatar[0], "user":user})
+        return render(request, "Post/inicio.html", {"avatar":avatar[0], "user":user})
     else:
         return render(request, "Post/inicio.html")
 
