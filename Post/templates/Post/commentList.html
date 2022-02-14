@@ -8,11 +8,15 @@
     <h1> Comentarios </h1>
 
     {% for comment in comments %}
-            <p>{{ comment.text }}</p>
+        <p>{{ comment.user.username}} dice:</p>
+        <p>{{ comment.text|safe }}</p>
+            
+        {% if user.username == comment.user.username %}
             <p>
                 <a href="{% url 'CommentDelete' comment.id %}">Borrar</a>
             </p>
-
+        {% endif %}
+                
     {% endfor %}
 
     <a href="{% url 'CommentForm' post %}">Nuevo Comentario</a>

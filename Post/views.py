@@ -42,11 +42,7 @@ class PostCreate(CreateView, UserPassesTestMixin):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        grupos = self.request.user.groups.all()
-        if 'Admin' in grupos:
-            return super(PostCreate, self).form_valid(form)
-        else:
-            return super(PostCreate, self).form_invalid(form)
+        return super(PostCreate, self).form_valid(form)
 
 @method_decorator(login_required, name='dispatch')
 class PostUpdate(UpdateView):
@@ -54,24 +50,10 @@ class PostUpdate(UpdateView):
     success_url = "/Post/postList/"
     fields = ['title', 'subtitle', 'body', 'tags', 'image']
 
-    def form_valid(self, form):
-        grupos = self.request.user.groups.all()
-        if 'Admin' in grupos:
-            return super(PostUpdate, self).form_valid(form)
-        else:
-            return super(PostUpdate, self).form_invalid(form)
-
 @method_decorator(login_required, name='dispatch')
 class PostDelete(DeleteView):
     model= models.Post
     success_url = "/Post/postList/"
-
-    def form_valid(self, form):
-        grupos = self.request.user.groups.all()
-        if 'Admin' in grupos:
-            return super(PostDelete, self).form_valid(form)
-        else:
-            return super(PostDelete, self).form_invalid(form)
 
 @method_decorator(login_required, name='dispatch')
 class TagList(ListView):
@@ -83,23 +65,12 @@ class TagCreate(CreateView):
     model= models.Tag
     success_url = "/Post/tagList/"
     fields = ['name']
-    def form_valid(self, form):
-        grupos = self.request.user.groups.all()
-        if 'Admin' in grupos:
-            return super(TagCreate, self).form_valid(form)
-        else:
-            return super(TagCreate, self).form_invalid(form)
+
 
 @method_decorator(login_required, name='dispatch')
 class TagDelete(DeleteView):
     model= models.Tag
     success_url = "/Post/tagList/"
-    def form_valid(self, form):
-        grupos = self.request.user.groups.all()
-        if 'Admin' in grupos:
-            return super(TagDelete, self).form_valid(form)
-        else:
-            return super(TagDelete, self).form_invalid(form)
 
 @login_required
 def postTagList(request,tag):
@@ -127,7 +98,8 @@ def commentForm(request, post):
 
             informacion = commentForm.cleaned_data
             myPost = models.Post.objects.get(id=post)
-            comment = models.Comment(text=informacion['text'], post=myPost)
+            user = User.objects.get(username=request.user)
+            comment = models.Comment(text=informacion['text'], post=myPost, user=user)
             comment.save()
             comments=models.Comment.objects.filter(post=post)
             return render(request,"Post/commentList.html",{"comments":comments, "post":post})

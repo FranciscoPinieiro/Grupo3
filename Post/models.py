@@ -24,6 +24,7 @@ class Post(models.Model):
 class Comment(models.Model):
     text=RichTextField()
     post=models.ForeignKey(Post, on_delete=models.CASCADE)
+    user=models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
 class Avatar(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)

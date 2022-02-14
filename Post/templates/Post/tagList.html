@@ -16,7 +16,7 @@
             </p>
         {% endfor %}
     {% if user|has_group:'Admin' %}
-        <button href="{% url 'TagCreate' %}">Nueva Tag</button>
+        <a href="{% url 'TagCreate' %}">Nueva Tag</a>
     {% endif %}
 </div>
 {% endblock %}

@@ -22,7 +22,7 @@
         {% endfor %}
     {% endif %}
     {% if user|has_group:'Admin' %}
-        <button href="{% url 'PostCreate' %}">Nuevo Post</button>
+        <a href="{% url 'PostCreate' %}">Nuevo Post</a>
     {% endif %}
 </div>
 
