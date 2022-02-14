@@ -5,7 +5,9 @@
 {% block contenidoQueCambia %}
 <div class="text-center">
     <h3>Bienvenido a este blog {{user.username}}</h3>
-    <img height="80px" src="{{imagenURL}}">
+    {% if avatar.imagen %}
+        <img height="100px" src="{{avatar.imagen.url}}">
+    {% endif %}
     {{ mensaje }}
 </div>
 

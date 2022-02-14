@@ -11,7 +11,11 @@
     <p>Descripcion: {{avatar.desc|safe}}</p>
     <p>Link: {{avatar.link}}</p>
     <p>Avatar</p>
-    <img height="100px" src="{{avatar.imagen.url}}">
+    
+    {% if avatar.imagen %}
+        <img height="100px" src="{{avatar.imagen.url}}">
+    {% endif %}
+    
 </table>
 <p>
     <a href="{% url 'EditarPerfil' %}">Editar Perfil</a>

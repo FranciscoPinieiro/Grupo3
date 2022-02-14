@@ -17,7 +17,7 @@ def inicio(request):
     user=models.User.objects.get(id=request.user.id)
     avatar=models.Avatar.objects.filter(user=request.user.id)
     if avatar:
-        return render(request, "Post/inicio.html", {"imagenURL":avatar[0].imagen.url, "user":user})
+        return render(request, "Post/inicio.html", {"imagenURL":avatar[0], "user":user})
     else:
         return render(request, "Post/inicio.html")
 
@@ -127,7 +127,7 @@ def login_request(request):
                 avatar=models.Avatar.objects.filter(user=request.user.id)
                 user=models.User.objects.get(id=request.user.id)
                 if avatar:
-                    return render(request, "Post/inicio.html", {"imagenURL":avatar[0].imagen.url, "user":user})
+                    return render(request, "Post/inicio.html", {"imagenURL":avatar[0], "user":user})
                 else:
                     return render(request, "Post/inicio.html",{"user":user})
             else:
